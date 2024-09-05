@@ -16,7 +16,7 @@ const avatar = (name: string) =>
 
 function Navbar() {
   console.log(avatar);
-  return "hello";
+  return <nav></nav>;
 }
 
 export default Navbar;

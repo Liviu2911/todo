@@ -11,12 +11,18 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as SettingsImport } from './routes/settings'
 import { Route as RegisterImport } from './routes/register'
 import { Route as LoginImport } from './routes/login'
 import { Route as DashboardImport } from './routes/dashboard'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const SettingsRoute = SettingsImport.update({
+  path: '/settings',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const RegisterRoute = RegisterImport.update({
   path: '/register',
@@ -70,6 +76,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterImport
       parentRoute: typeof rootRoute
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -80,6 +93,7 @@ export const routeTree = rootRoute.addChildren({
   DashboardRoute,
   LoginRoute,
   RegisterRoute,
+  SettingsRoute,
 })
 
 /* prettier-ignore-end */
@@ -93,7 +107,8 @@ export const routeTree = rootRoute.addChildren({
         "/",
         "/dashboard",
         "/login",
-        "/register"
+        "/register",
+        "/settings"
       ]
     },
     "/": {
@@ -107,6 +122,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/register": {
       "filePath": "register.tsx"
+    },
+    "/settings": {
+      "filePath": "settings.tsx"
     }
   }
 }
