@@ -6,7 +6,7 @@ const createTokens = (req: Request, _: Response, next: NextFunction) => {
   const { id, key } = req;
 
   const accessToken = sign({ id }, key, {
-    expiresIn: "5m",
+    expiresIn: "5s",
     algorithm: "PS512",
   });
   const refreshToken = sign({ id }, key, {
