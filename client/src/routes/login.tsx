@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import Button from "@/components/button";
-import wave from "../../public/wave.svg";
+import wave from "../../public/wave_bg.svg";
 import login from "../../db/login";
 
 export const Route = createFileRoute("/login")({

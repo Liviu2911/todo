@@ -8,6 +8,10 @@
   font-optical-sizing: auto;
   font-style: normal;
 }
+body {
+  padding-left: 16px;
+  padding-right: 16px;
+}
 
 @layer base {
   :root {

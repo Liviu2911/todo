@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import Button from "@/components/button";
-import wave from "../../public/wave.svg";
+import wave from "../../public/wave_bg.svg";
 import register from "../../db/register";
 
 export const Route = createFileRoute("/register")({
