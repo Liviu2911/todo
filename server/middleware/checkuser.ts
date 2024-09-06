@@ -1,39 +1,33 @@
 import type { Response, Request, NextFunction } from "express";
+import tryFunc from "../try";
 import { auth } from "../db";
-import { compare } from "bcrypt";
 
 const checkUser = async (req: Request, res: Response, next: NextFunction) => {
-  const { email, password } = req.body;
+  const { email } = req.body;
 
-  try {
-    const userRes = await auth.query("SELECT * FROM users WHERE email=$1", [
-      email,
-    ]);
-    if (!userRes.rowCount) {
-      return res.status(404).send({
-        success: false,
-        error: "User not found",
-      });
-    }
+  const { data: user, error } = await tryFunc(async () => {
+    const userRes = await auth.query(
+      "SELECT username, id, password FROM users WHERE email=$1",
+      [email]
+    );
+    if (!userRes.rowCount) throw new Error("Incorect login credentials");
 
-    const match = await compare(password, userRes.rows[0].password);
+    return userRes.rows[0];
+  });
 
-    if (!match) {
-      return res.status(401).send({
-        success: false,
-        errro: "Incorect password",
-      });
-    }
-
-    // @ts-ignore
-    req.user = userRes.rows[0];
-    next();
-  } catch (e) {
-    return res.status(500).send({
+  if (!user || error) {
+    return res.status(404).send({
       success: false,
-      error: e,
+      error: error.message ? error.message : error,
     });
   }
+
+  // @ts-ignore
+  req.user = user;
+  // @ts-ignore
+  req.id = user.id;
+
+  next();
 };
 
 export default checkUser;

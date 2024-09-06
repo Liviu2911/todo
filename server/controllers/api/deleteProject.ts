@@ -1,5 +1,4 @@
 import type { Response, Request } from "express";
-import type { Table } from "../../types";
 import tryFunc from "../../try";
 import { api } from "../../db";
 

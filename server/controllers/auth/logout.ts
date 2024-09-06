@@ -1,31 +1,55 @@
 import type { Response, Request } from "express";
+import tryFunc from "../../try";
 import { auth } from "../../db";
 
 const logout = async (req: Request, res: Response) => {
-  // @ts-ignore
-  const { user } = req;
   const { session } = req.cookies;
 
-  try {
-    const sessionRes = await auth.query(
-      "DELETE FROM sessions WHERE id=$1 AND userid=$2 RETURNING *",
-      [session, user]
-    );
+  const { data: deleteSession, error: deleteError } = await tryFunc(
+    async () => {
+      const deleteRes = await auth.query(
+        "DELETE FROM sessions WHERE id=$1 RETURNING *",
+        [session]
+      );
 
-    const { refresh_token } = sessionRes.rows[0];
-    await auth.query("DELETE FROM refresh_tokens WHERE id=$1", [refresh_token]);
+      if (!deleteRes.rowCount) throw new Error("Couldn't logout");
 
-    res.clearCookie("session");
+      return deleteRes.rows[0];
+    }
+  );
 
-    return res.status(200).send({
-      success: true,
-    });
-  } catch (e) {
-    return res.status(500).send({
+  if (!deleteSession || deleteError) {
+    return res.status(400).send({
       success: false,
-      error: e,
+      error: deleteError.message ? deleteError.message : deleteError,
     });
   }
+
+  const { refresh_token } = deleteSession;
+
+  const { data: deleteToken, error: tokenError } = await tryFunc(async () => {
+    const tokenRes = await auth.query(
+      "DELETE FROM refresh_tokens WHERE id=$1 RETURNING *",
+      [refresh_token]
+    );
+
+    if (!tokenRes.rowCount) throw new Error("Couldn't logout");
+
+    return tokenRes.rows[0];
+  });
+
+  if (!deleteToken || tokenError) {
+    return res.status(400).send({
+      success: false,
+      error: tokenError.message ? tokenError.message : tokenError,
+    });
+  }
+
+  res.clearCookie("session");
+  return res.status(200).send({
+    success: true,
+    messsage: "User logged out successfuly",
+  });
 };
 
 export default logout;
