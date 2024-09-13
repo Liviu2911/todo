@@ -8,14 +8,13 @@ const checkPassword = async (
 ) => {
   const { password } = req.body;
   // @ts-ignore
-  const { password: hashedPassword } = req.user;
+  const { userPassword } = req;
 
-  const match = await compare(password, hashedPassword);
-
+  const match = await compare(password, userPassword);
   if (!match) {
-    return res.status(401).send({
+    return res.status(400).send({
       success: false,
-      error: "Incorect login credentials",
+      error: "Invalid credentials",
     });
   }
 

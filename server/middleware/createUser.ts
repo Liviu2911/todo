@@ -1,34 +1,33 @@
 import type { Response, Request, NextFunction } from "express";
-import { v4 } from "uuid";
 import tryFunc from "../try";
 import { auth } from "../db";
+import { v4 } from "uuid";
 import { hash } from "bcrypt";
 
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
-  const { email, username, password } = req.body;
-
-  const hasedPassword = await hash(password, 10);
-  const id = v4();
-  const { data: user, error } = await tryFunc(async () => {
+  const userId = v4();
+  const { username, email, password } = req.body;
+  const hashedPassword = await hash(password, 10);
+  const { data, error } = await tryFunc(async () => {
     const userRes = await auth.query(
-      "INSERT INTO users (id, email, username, password) VALUES ($1, $2, $3, $4) RETURNING *",
-      [id, email, username, hasedPassword]
+      "INSERT INTO users (id, username, email, password) VALUES($1, $2, $3, $4) RETURNING *",
+      [userId, username, email, hashedPassword]
     );
 
-    if (!userRes.rowCount) throw new Error("Couldn't create new user");
-
+    if (!userRes.rowCount) throw new Error("User could not be created");
     return userRes.rows[0];
   });
 
-  if (error || !user) {
+  if (!data || error) {
     return res.status(400).send({
       success: false,
-      error: error.message ? error.message : error,
+      error,
     });
   }
 
   // @ts-ignore
-  req.id = id;
+  req.userId = userId;
+  // @ts-ignore
   next();
 };
 

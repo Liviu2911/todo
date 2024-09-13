@@ -7,10 +7,10 @@ const checkUser = async (req: Request, res: Response, next: NextFunction) => {
 
   const { data: user, error } = await tryFunc(async () => {
     const userRes = await auth.query(
-      "SELECT username, id, password FROM users WHERE email=$1",
+      "SELECT id, password FROM users WHERE email=$1",
       [email]
     );
-    if (!userRes.rowCount) throw new Error("Incorect login credentials");
+    if (!userRes.rowCount) throw new Error("Invalid credentials");
 
     return userRes.rows[0];
   });
@@ -18,14 +18,14 @@ const checkUser = async (req: Request, res: Response, next: NextFunction) => {
   if (!user || error) {
     return res.status(404).send({
       success: false,
-      error: error.message ? error.message : error,
+      error,
     });
   }
 
   // @ts-ignore
-  req.user = user;
+  req.userId = user.id;
   // @ts-ignore
-  req.id = user.id;
+  req.userPassword = user.password;
 
   next();
 };
