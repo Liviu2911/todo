@@ -6,9 +6,10 @@ import SearchNavButton from "./search";
 interface Props {
   title: string;
   searchParams: DashboardSearch;
+  path: string;
 }
 
-function Navbar({ title, searchParams }: Props) {
+function Navbar({ title, searchParams, path }: Props) {
   const { logout } = searchParams;
   return (
     <nav
@@ -19,7 +20,7 @@ function Navbar({ title, searchParams }: Props) {
       <div className="flex flex-row items-center gap-4">
         <SearchNavButton />
         <NewTodoButton />
-        <ProfilePic logout={logout} />
+        <ProfilePic logout={logout} path={path} />
       </div>
     </nav>
   );

@@ -18,7 +18,7 @@ const checkUser = async (req: Request, res: Response, next: NextFunction) => {
   if (!user || error) {
     return res.status(404).send({
       success: false,
-      error,
+      error: error.message ? error.message : error,
     });
   }
 

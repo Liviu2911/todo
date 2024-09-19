@@ -21,7 +21,7 @@ function SidebarUp({ active }: { active: string }) {
         Settings
       </Link>
 
-      <div className="w-[90%] h-[2px] bg-blue-200 rounded-full mt-2" />
+      <div className="w-[90%] h-[2px] bg-blue-200 rounded-full mt-2 mb-2" />
     </div>
   );
 }

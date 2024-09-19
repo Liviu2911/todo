@@ -90,6 +90,8 @@ const projects = async (req: Request, res: Response) => {
   return res.send({
     projects,
     username,
+    userId,
+    session: true,
   });
 };
 

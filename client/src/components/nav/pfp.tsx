@@ -3,6 +3,7 @@ import { createAvatar } from "@dicebear/core";
 import { Link } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import Button from "../button";
+import logoutFunc from "../../../db/logout";
 
 const avatar = (name: string) =>
   createAvatar(lorelei, {
@@ -19,14 +20,15 @@ const avatar = (name: string) =>
 
 interface Props {
   logout?: true;
+  path: string;
 }
 
-function ProfilePic({ logout }: Props) {
+function ProfilePic({ logout, path }: Props) {
   return (
     <div className="relative flex flex-col items-center">
       <Link
-        to={"/dashboard"}
-        search={{ logout: logout ? undefined : true }}
+        to={path}
+        search={(prev) => ({ ...prev, logout: logout ? undefined : true })}
         className="size-10 rounded-full bg-stone-200 flex items-center justify-center overflow-hidden hover:opacity-80 t3"
       >
         <img src={avatar(localStorage.getItem("user") || "")} alt="pfp" />
@@ -43,7 +45,10 @@ function ProfilePic({ logout }: Props) {
             exit={{ opacity: 0, transition: { duration: 0.3, ease: "linear" } }}
             className="relative flex items-center justify-center"
           >
-            <Button classname="absolute bottom-[-40px] bg-rose-500 text-sm flex flex-row items-center gap-2">
+            <Button
+              onClick={logoutFunc}
+              classname="absolute bottom-[-40px] bg-rose-500 text-sm flex flex-row items-center gap-2"
+            >
               Logout
             </Button>
           </motion.div>

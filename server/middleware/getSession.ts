@@ -18,7 +18,7 @@ const getSession = async (req: Request, res: Response, next: NextFunction) => {
   if (!data || error) {
     return res.status(404).send({
       session: false,
-      error,
+      error: error.message ? error.message : error,
     });
   }
 

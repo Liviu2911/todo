@@ -11,6 +11,7 @@ export const Route = createFileRoute("/login")({
 
 function Login() {
   const navigate = useNavigate();
+  const { error } = Route.useSearch();
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -26,6 +27,7 @@ function Login() {
       return;
     }
 
+    console.log(loginRes.error);
     navigate({
       to: "/login",
       search: {
@@ -53,6 +55,7 @@ function Login() {
             <Button classname="bg-green-500">Register</Button>
           </Link>
         </div>
+        {error && <h1 className="text-rose-500">{error}</h1>}
       </form>
     </>
   );
