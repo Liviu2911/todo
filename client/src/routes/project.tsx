@@ -7,7 +7,8 @@ import bg from "../../public/wave_bg.svg";
 import getProjects from "../../db/getProjects";
 
 export const Route = createFileRoute("/project")({
-  validateSearch: (search: { id: string; logout?: true }) => search,
+  validateSearch: (search: { id: string; logout?: true; create?: true }) =>
+    search,
   loader: protectedLoader,
   component: Project,
 });
