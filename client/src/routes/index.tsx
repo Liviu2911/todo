@@ -1,31 +1,36 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import bg from "../../public/wave_bg.svg";
-import Button from "@/components/button";
+import { useContext } from "react";
+import { Data } from "./__root";
+import wave from "../assets/Stacked Waves Haikei.svg";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
   component: Home,
 });
 
 function Home() {
+  const data = useContext(Data);
+  console.log(data);
   return (
     <>
-      <img src={bg} alt="bg" className="w-full absolute z-[-1] bottom-0 " />
       <img
-        src={bg}
-        alt="bg"
-        className="w-full absolute z-[-1] top-[-100px] rotate-180"
+        alt="Background"
+        src={wave}
+        className="absolute top-0 left-0 w-full z-[-1]"
       />
-      <h1 className="text-center text-6xl mt-20">
-        This is <span className="font-bold text-sky-300">theTodo</span>
+      <h1 className="text-white font-semibold text-center text-2xl mt-32">
+        Discover the best, and most over-engineered, todo app
       </h1>
 
-      <div className="w-full h-[100vh] absolute top-96 left-0 flex flex-col gap-4 items-center">
-        <h1 className="text-4xl">
-          Go to dashboard to create your useless todos
+      <div className="flex flex-col w-full items-center gap-4 mt-10 font-semibold">
+        <h1 className="text-rose-500 text-xl">
+          {data.session
+            ? "Go to dashboard and explore"
+            : "Login to explore the not so endless possibilities"}
         </h1>
-        <Link to={"/dashboard"}>
-          <Button classname="bg-sky-500 shadow-md shadow-sky-600">
-            Dashboard
+        <Link to={data.session ? "/dashboard" : "/login"}>
+          <Button className="hover:opacity-80 transition-opacity bg-white text-black hover:bg-white font-medium px-5">
+            {data.session ? "Dashboard" : "Log In"}
           </Button>
         </Link>
       </div>

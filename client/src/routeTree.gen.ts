@@ -11,7 +11,6 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as SettingsImport } from './routes/settings'
 import { Route as RegisterImport } from './routes/register'
 import { Route as ProjectImport } from './routes/project'
 import { Route as LoginImport } from './routes/login'
@@ -19,11 +18,6 @@ import { Route as DashboardImport } from './routes/dashboard'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
-
-const SettingsRoute = SettingsImport.update({
-  path: '/settings',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const RegisterRoute = RegisterImport.update({
   path: '/register',
@@ -89,26 +83,64 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterImport
       parentRoute: typeof rootRoute
     }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsImport
-      parentRoute: typeof rootRoute
-    }
   }
 }
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({
-  IndexRoute,
-  DashboardRoute,
-  LoginRoute,
-  ProjectRoute,
-  RegisterRoute,
-  SettingsRoute,
-})
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/login': typeof LoginRoute
+  '/project': typeof ProjectRoute
+  '/register': typeof RegisterRoute
+}
+
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/login': typeof LoginRoute
+  '/project': typeof ProjectRoute
+  '/register': typeof RegisterRoute
+}
+
+export interface FileRoutesById {
+  __root__: typeof rootRoute
+  '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/login': typeof LoginRoute
+  '/project': typeof ProjectRoute
+  '/register': typeof RegisterRoute
+}
+
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '/dashboard' | '/login' | '/project' | '/register'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/dashboard' | '/login' | '/project' | '/register'
+  id: '__root__' | '/' | '/dashboard' | '/login' | '/project' | '/register'
+  fileRoutesById: FileRoutesById
+}
+
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRoute
+  LoginRoute: typeof LoginRoute
+  ProjectRoute: typeof ProjectRoute
+  RegisterRoute: typeof RegisterRoute
+}
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRoute,
+  LoginRoute: LoginRoute,
+  ProjectRoute: ProjectRoute,
+  RegisterRoute: RegisterRoute,
+}
+
+export const routeTree = rootRoute
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
 /* prettier-ignore-end */
 
@@ -122,8 +154,7 @@ export const routeTree = rootRoute.addChildren({
         "/dashboard",
         "/login",
         "/project",
-        "/register",
-        "/settings"
+        "/register"
       ]
     },
     "/": {
@@ -140,9 +171,6 @@ export const routeTree = rootRoute.addChildren({
     },
     "/register": {
       "filePath": "register.tsx"
-    },
-    "/settings": {
-      "filePath": "settings.tsx"
     }
   }
 }
