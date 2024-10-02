@@ -7,7 +7,7 @@ function Projects() {
   const { projects } = useContext(Data);
   return (
     <div className="flex flex-col gap-2">
-      {projects.map((project: Project) => (
+      {projects?.map((project: Project) => (
         <Link
           key={project.id}
           to="/project"

@@ -11,7 +11,7 @@ function FormInput({ name }: Props) {
         {name}
       </label>
       <Input
-        type={name === "password" ? name : "text"}
+        type={name.includes("password") ? "password" : "text"}
         name={name}
         className="w-72"
       />

@@ -19,9 +19,10 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
   });
 
   if (!data || error) {
+    console.log(error);
     return res.status(400).send({
       success: false,
-      error,
+      error: error || error.message,
     });
   }
 
