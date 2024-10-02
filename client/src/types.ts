@@ -34,4 +34,7 @@ export type SearchParams = {
   search?: true;
   logout?: true;
   id?: string;
+  settings?: true;
+  editid?: string;
+  error?: string;
 };

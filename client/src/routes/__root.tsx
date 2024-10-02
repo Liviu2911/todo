@@ -35,6 +35,7 @@ function Index() {
 
       return json;
     },
+    refetchInterval: 1000,
   });
 
   if (error) {
