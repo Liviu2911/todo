@@ -6,6 +6,7 @@ import Sidebar from "@/components/sidebar";
 import Navbar from "@/components/navbar";
 import Newproject from "@/components/newproject";
 import EditProject from "@/components/editproject";
+import Create from "@/components/create";
 
 export const Route = createFileRoute("/project")({
   component: Project,
@@ -13,7 +14,7 @@ export const Route = createFileRoute("/project")({
 });
 
 function Project() {
-  const { newproject, editid } = useContext(SearchParamsContext);
+  const { newproject, editid, create } = useContext(SearchParamsContext);
   return (
     <>
       <div className="flex flex-row gap-[5vh] m-[5vh]">
@@ -22,6 +23,7 @@ function Project() {
       </div>
       {newproject && <Newproject />}
       {editid && <EditProject />}
+      {create && <Create />}
     </>
   );
 }

@@ -68,7 +68,7 @@ function EditProject() {
         <h1 className="text-lg">
           Edit project: <span className="text-rose-500">{project.name}</span>
         </h1>
-        <Input noring="true" name="name" />
+        <Input noring="true" name="name" defaultValue={project.name} />
         <Button type="submit" className="px-8">
           Save
         </Button>

@@ -19,6 +19,7 @@ export type Project = {
   id: string;
   userid: string;
   name: string;
+  statuses: Status[];
 };
 
 export type Data = {

@@ -1,5 +1,5 @@
 interface Props {
-  children: React.ReactElement;
+  children: React.ReactNode;
 }
 
 function Modal({ children }: Props) {
