@@ -1,13 +1,13 @@
 import { FormEvent, useContext, useState } from "react";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import CreateInput from "./input";
-import CreateSelect from "./select";
+import CreateInput from "../input";
 import { CreateFunctions } from ".";
-import { Data, SearchParamsContext } from "@/routes/__root";
+import { Data } from "@/routes/__root";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { Link, useNavigate } from "@tanstack/react-router";
+import Select from "../select";
 
 const schema = z
   .object({
@@ -28,9 +28,10 @@ const schema = z
   );
 
 function Todo() {
-  const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { projects, userId: userid } = useContext(Data);
+  const [error, setError] = useState("");
+  const [projectid, setProjectid] = useState("");
+  const { userId: userid, projects } = useContext(Data);
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -77,8 +78,7 @@ function Todo() {
     });
   };
 
-  const { select, setSelect, divClass } = useContext(CreateFunctions);
-  const { id } = useContext(SearchParamsContext);
+  const { divClass } = useContext(CreateFunctions);
   return (
     <form
       className="flex flex-col items-center gap-2 relative"
@@ -99,24 +99,19 @@ function Todo() {
           className="w-64"
         />
       </div>
-
       <div className={divClass}>
         <label htmlFor="project">Project</label>
-        <CreateSelect
-          select={select}
-          setSelect={setSelect}
-          name="project"
-          data={projects}
-        />
+        <Select name="project" data={projects} setProjectid={setProjectid} />
       </div>
-
       <div className={divClass}>
         <label htmlFor="status">Status</label>
-        <CreateSelect
-          select={select}
-          setSelect={setSelect}
+        <Select
           name="status"
-          data={projects.filter((project) => project.id === id)[0].statuses}
+          data={
+            projectid !== ""
+              ? projects.filter((item) => item.id === projectid)[0].statuses
+              : []
+          }
         />
       </div>
 

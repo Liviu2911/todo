@@ -36,6 +36,8 @@ export type SearchParams = {
   logout?: true;
   id?: string;
   settings?: true;
-  editid?: string;
   error?: string;
+  edit?: true;
+  editstatus?: string;
+  edittodo?: string;
 };

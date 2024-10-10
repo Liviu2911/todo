@@ -1,9 +1,12 @@
-import { SearchParamsContext } from "@/routes/__root";
-import { Link, useNavigate } from "@tanstack/react-router";
-import { useContext } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
 import { FaUserAstronaut } from "react-icons/fa";
+import { AnimatePresence, motion } from "framer-motion";
+import { popup } from "@/animations";
 
 function Pfp() {
+  const [show, setShow] = useState(false);
+  const ref = useRef(null);
   const navigate = useNavigate();
   async function logout() {
     const res = await fetch("http://localhost:3000/api/v1/todo/logout", {
@@ -22,32 +25,53 @@ function Pfp() {
       return;
     }
   }
-  const { logout: show } = useContext(SearchParamsContext);
-  const path = window.location.pathname;
+  const handleClick = (e: MouseEvent) => {
+    // @ts-expect-error aaa
+    if (ref.current && !ref.current.contains(e.target)) {
+      setShow(false);
+    }
+  };
+
+  useEffect(() => {
+    if (show) {
+      document.addEventListener("mousedown", handleClick);
+    } else {
+      document.removeEventListener("mousedown", handleClick);
+    }
+
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [show]);
 
   return (
     <div className="relative">
-      <Link
-        to={path}
-        search={(prev) => ({
-          id: prev.id,
-          logout: prev.logout ? undefined : true,
-        })}
+      <button
+        onClick={() => setShow(true)}
+        className="p-2 bg-white rounded-full hover:opacity-80 hover:text-rose-500 transition-all"
       >
-        <div className="p-2 bg-white rounded-full hover:text-red-500 hover:opacity-80 transition-all">
-          <FaUserAstronaut />
-        </div>
-      </Link>
-      {show && (
-        <form onSubmit={logout}>
-          <button
-            type="submit"
-            className="absolute top-10 left-[-20px] px-3 py-1 bg-white text-black hover:text-rose-500 transition-all rounded w-20 text-sm"
+        <FaUserAstronaut />
+      </button>
+
+      <AnimatePresence>
+        {show && (
+          <motion.div
+            ref={ref}
+            transition={popup.transition}
+            initial={popup.initial}
+            animate={popup.animate}
+            exit={popup.initial}
+            className="absolute top-10 left-[-22px] p-1 bg-white text-black rounded text-sm flex items-center justify-center"
           >
-            Log out
-          </button>
-        </form>
-      )}
+            <form onSubmit={logout}>
+              <button
+                type="submit"
+                className="p-1.5 hover:bg-stone-200 rounded outline-none transition-[0.2s] min-w-16"
+              >
+                Log out
+              </button>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

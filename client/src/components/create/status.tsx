@@ -1,11 +1,10 @@
 import { useContext, useState } from "react";
-import CreateInput from "./input";
-import CreateSelect from "./select";
-import { CreateFunctions } from ".";
+import CreateInput from "../input";
 import { Data } from "@/routes/__root";
 import { Button } from "../ui/button";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
+import Select from "../select";
 
 const schema = z.object({
   name: z
@@ -20,8 +19,11 @@ const schema = z.object({
 function Status() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
-  const { select, setSelect, divClass } = useContext(CreateFunctions);
-  const { projects, userId } = useContext(Data);
+  const [project, setProject] = useState({
+    name: "Project",
+    id: "-1",
+  });
+  const { userId, projects } = useContext(Data);
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -57,13 +59,13 @@ function Status() {
     >
       <CreateInput name="name" />
 
-      <div className={divClass}>
+      <div className="flex flex-col gap-2">
         <label htmlFor="project">Project</label>
-        <CreateSelect
+        <Select
           name="project"
-          select={select}
-          setSelect={setSelect}
           data={projects}
+          value={project}
+          setValue={setProject}
         />
       </div>
 

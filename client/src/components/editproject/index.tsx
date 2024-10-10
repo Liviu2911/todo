@@ -3,7 +3,7 @@ import Modal from "../modal";
 import { Data, SearchParamsContext } from "@/routes/__root";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 
 const schema = z
@@ -13,9 +13,9 @@ const schema = z
 
 function EditProject() {
   const navigate = useNavigate();
-  const { editid, id, error } = useContext(SearchParamsContext);
+  const { id, error } = useContext(SearchParamsContext);
   const { projects, userId } = useContext(Data);
-  const project = projects.filter((item) => item.id === editid)[0];
+  const project = projects.filter((item) => item.id === id)[0];
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -53,7 +53,7 @@ function EditProject() {
       to: "/project",
       search: (prev) => ({
         id: prev.id,
-        editid: prev.editid,
+        edit: prev.edit,
         error: json.error,
       }),
     });
@@ -69,14 +69,21 @@ function EditProject() {
           Edit project: <span className="text-rose-500">{project.name}</span>
         </h1>
         <Input noring="true" name="name" defaultValue={project.name} />
-        <Button type="submit" className="px-8">
-          Save
-        </Button>
         {error && (
           <h1 className="text-rose-500 text-sm max-w-40 text-center">
             {error}
           </h1>
         )}
+        <div className="flex flex-col items-center">
+          <Button type="submit" className="px-8">
+            Save
+          </Button>
+          <Link to="/project" search={(prev) => ({ ...prev, edit: undefined })}>
+            <Button variant={"link"} className="hover:text-rose-500">
+              Close
+            </Button>
+          </Link>
+        </div>
       </form>
     </Modal>
   );
