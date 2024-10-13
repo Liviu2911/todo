@@ -4,7 +4,7 @@ import { Link } from "@tanstack/react-router";
 
 function Status({ status }: { status: Type }) {
   return (
-    <div className="flex flex-col gap-4 items-start h-[95vh] w-[400px] overflow-y-scroll">
+    <div className="flex flex-col gap-8 items-start min-h-[70vh] w-[400px] overflow-y-scroll">
       <Link
         to="/project"
         search={(prev) => ({ ...prev, editstatus: status.id })}

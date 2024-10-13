@@ -11,9 +11,13 @@ export const TodoContext = createContext<{
 }>({ id: "", setShow: () => {} });
 
 function Todo({ todo }: { todo: Type }) {
-  const { name, expires } = todo;
+  const { name, body } = todo;
   const [show, setShow] = useState(false);
   const ref = useRef(null);
+  const expires = todo.expires
+    .split("T")
+    .join(" ")
+    .slice(0, todo.expires.length - 8);
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -33,17 +37,20 @@ function Todo({ todo }: { todo: Type }) {
 
   return (
     <div className="p-4 bg-stone-700 border border-stone-200 rounded-lg w-72 relative">
-      <div className="flex flex-row justify-between">
-        <h1 className="text-white">{name}</h1>
+      <div className="flex flex-col gap-4 justify-between">
+        <div className="flex flex-row items-center justify-between">
+          <h1 className="text-white opacity-80">{name}</h1>
 
-        <div className="relative">
-          <button
-            onClick={() => setShow(true)}
-            className="text-white opacity-80 hover:oapcity-100 hover:text-rose-500 transition-all"
-          >
-            <BsThreeDotsVertical />
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setShow(true)}
+              className="text-white opacity-80 hover:oapcity-100 hover:text-rose-500 transition-all"
+            >
+              <BsThreeDotsVertical />
+            </button>
+          </div>
         </div>
+        <p className="text-sm text-white">{body}</p>
         <AnimatePresence>
           {show && (
             <TodoContext.Provider value={{ ref, id: todo.id, setShow }}>
@@ -54,7 +61,8 @@ function Todo({ todo }: { todo: Type }) {
       </div>
 
       <h1 className="text-white italic absolute bottom-[-20px] text-xs opacity-80">
-        Expires on {expires}
+        Expires on{" "}
+        <span className="text-rose-500 font-semibold">{expires}</span>
       </h1>
     </div>
   );

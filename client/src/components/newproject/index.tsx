@@ -2,13 +2,14 @@ import { FormEvent, useContext } from "react";
 import Modal from "../modal";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Data } from "@/routes/__root";
+import { Data, Path, SearchParamsContext } from "@/routes/__root";
 import { useNavigate } from "@tanstack/react-router";
 
 function Newproject() {
   const { userId } = useContext(Data);
+  const path = useContext(Path);
+  const { newproject } = useContext(SearchParamsContext);
   const navigate = useNavigate();
-  const path = window.location.pathname;
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -35,7 +36,15 @@ function Newproject() {
     }
   };
   return (
-    <Modal>
+    <Modal
+      show={newproject ? true : false}
+      close={() =>
+        navigate({
+          to: path,
+          search: (prev) => ({ ...prev, newproject: undefined }),
+        })
+      }
+    >
       <form
         onSubmit={submit}
         className="p-8 rounded-lg bg-white flex flex-col items-center gap-4"

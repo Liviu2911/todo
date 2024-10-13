@@ -40,4 +40,5 @@ export type SearchParams = {
   edit?: true;
   editstatus?: string;
   edittodo?: string;
+  todo?: string;
 };

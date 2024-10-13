@@ -15,6 +15,7 @@ export const Data = React.createContext<Type>({
 });
 
 export const SearchParamsContext = React.createContext<SearchParams>({});
+export const Path = React.createContext<string>("");
 
 function Index() {
   const search = Route.useSearch();
@@ -57,7 +58,9 @@ function Index() {
       <React.Fragment>
         <Data.Provider value={data}>
           <SearchParamsContext.Provider value={search}>
-            <Outlet />
+            <Path.Provider value={path}>
+              <Outlet />
+            </Path.Provider>
           </SearchParamsContext.Provider>
         </Data.Provider>
       </React.Fragment>

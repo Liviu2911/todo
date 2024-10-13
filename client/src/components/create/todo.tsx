@@ -3,7 +3,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import CreateInput from "../input";
 import { CreateFunctions } from ".";
-import { Data } from "@/routes/__root";
+import { Data, Path } from "@/routes/__root";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { Link, useNavigate } from "@tanstack/react-router";
@@ -32,6 +32,7 @@ function Todo() {
   const [error, setError] = useState("");
   const [projectid, setProjectid] = useState("");
   const { userId: userid, projects } = useContext(Data);
+  const path = useContext(Path);
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -124,7 +125,7 @@ function Todo() {
       <Button type="submit" className="mt-4">
         Create
       </Button>
-      <Link to="/project" search={(prev) => ({ ...prev, create: undefined })}>
+      <Link to={path} search={(prev) => ({ ...prev, create: undefined })}>
         <Button type="button" variant="link" className="hover:text-rose-500">
           Close
         </Button>

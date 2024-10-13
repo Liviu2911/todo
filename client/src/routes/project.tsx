@@ -10,6 +10,8 @@ import Create from "@/components/create";
 import Status from "@/components/status";
 import EditStatus from "@/components/editstatus";
 import EditTodo from "@/components/edittodo";
+import Search from "@/components/search";
+import { AnimatePresence } from "framer-motion";
 
 export const Route = createFileRoute("/project")({
   component: Project,
@@ -17,10 +19,10 @@ export const Route = createFileRoute("/project")({
 });
 
 function Project() {
-  const { newproject, create, id, edit, editstatus, edittodo } =
+  const { newproject, create, id, edit, editstatus, edittodo, search } =
     useContext(SearchParamsContext);
   const { projects } = useContext(Data);
-  const { statuses } = projects.filter((item) => item.id === id)[0];
+  const { statuses } = projects?.filter((item) => item.id === id)[0] || [];
   return (
     <>
       <div className="flex flex-row gap-[5vh] m-[5vh]">
@@ -28,15 +30,16 @@ function Project() {
         <Navbar />
       </div>
       <div className="absolute mt-[20vh] ml-[268px] top-0 flex flex-row gap-4 overflow-x-scroll">
-        {statuses.map((status) => (
+        {statuses?.map((status) => (
           <Status status={status} key={`status ${status.id}`} />
         ))}
       </div>
-      {newproject && <Newproject />}
-      {edit && <EditProject />}
-      {create && <Create />}
-      {editstatus && <EditStatus />}
-      {edittodo && <EditTodo />}
+      <AnimatePresence>{newproject && <Newproject />}</AnimatePresence>
+      <AnimatePresence>{edit && <EditProject />}</AnimatePresence>
+      <AnimatePresence>{create && <Create />}</AnimatePresence>
+      <AnimatePresence>{editstatus && <EditStatus />}</AnimatePresence>
+      <AnimatePresence>{edittodo && <EditTodo />}</AnimatePresence>
+      <AnimatePresence>{search && <Search />}</AnimatePresence>
     </>
   );
 }

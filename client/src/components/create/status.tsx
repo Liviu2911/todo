@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import CreateInput from "../input";
-import { Data } from "@/routes/__root";
+import { Data, Path } from "@/routes/__root";
 import { Button } from "../ui/button";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
@@ -19,11 +19,8 @@ const schema = z.object({
 function Status() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
-  const [project, setProject] = useState({
-    name: "Project",
-    id: "-1",
-  });
   const { userId, projects } = useContext(Data);
+  const path = useContext(Path);
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -61,12 +58,7 @@ function Status() {
 
       <div className="flex flex-col gap-2">
         <label htmlFor="project">Project</label>
-        <Select
-          name="project"
-          data={projects}
-          value={project}
-          setValue={setProject}
-        />
+        <Select name="project" data={projects} />
       </div>
 
       {error && (
@@ -78,7 +70,7 @@ function Status() {
       <Button type="submit" className="mt-4">
         Create
       </Button>
-      <Link to="/project" search={(prev) => ({ ...prev, create: undefined })}>
+      <Link to={path} search={(prev) => ({ ...prev, create: undefined })}>
         <Button type="button" variant="link" className="hover:text-rose-500">
           Close
         </Button>

@@ -1,18 +1,21 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "../ui/button";
 import { useContext, useState } from "react";
-import { Data, SearchParamsContext } from "@/routes/__root";
-import { Status, Todo } from "@/types";
+import { Data, Path, SearchParamsContext } from "@/routes/__root";
+import { Project, Todo } from "@/types";
 import { Input as DateInput } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import Modal from "../modal";
 import Select from "../select";
 import Input from "../input";
 
-const findTodo = (statuses: Status[], id: string) => {
-  for (let i = 0; i < statuses.length; i++) {
-    for (let j = 0; j < statuses[i].todos.length; j++) {
-      if (statuses[i].todos[j].id === id) return statuses[i].todos[j];
+const findTodo = (projects: Project[], id: string) => {
+  for (let i = 0; i < projects.length; i++) {
+    for (let j = 0; j < projects[i].statuses.length; j++) {
+      const todos = projects[i].statuses[j].todos;
+      for (let k = 0; k < todos.length; k++) {
+        if (todos[k].id === id) return todos[k];
+      }
     }
   }
 
@@ -22,12 +25,10 @@ const findTodo = (statuses: Status[], id: string) => {
 function EditTodo() {
   const navigate = useNavigate();
   const [projectid, setProjectid] = useState("");
-  const { edittodo, id } = useContext(SearchParamsContext);
+  const path = useContext(Path);
+  const { edittodo } = useContext(SearchParamsContext);
   const { projects, userId: userid } = useContext(Data);
-  const todo: Todo | null = findTodo(
-    projects.find((item) => item.id === id)?.statuses || [],
-    edittodo || ""
-  );
+  const todo: Todo | null = findTodo(projects, edittodo || "");
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -60,13 +61,21 @@ function EditTodo() {
     }
 
     navigate({
-      to: "/project",
+      to: path,
       search: (prev) => ({ ...prev, edittodo: undefined }),
     });
   };
 
   return (
-    <Modal>
+    <Modal
+      show={edittodo ? true : false}
+      close={() =>
+        navigate({
+          to: path,
+          search: (prev) => ({ ...prev, edittodo: undefined }),
+        })
+      }
+    >
       <form
         onSubmit={submit}
         className="rounded-lg bg-white p-8 flex flex-col gap-8 items-center"
@@ -100,11 +109,12 @@ function EditTodo() {
 
         <div className="flex flex-col gap-2 items-center">
           <Button type="submit">Save</Button>
-          <Link
-            to="/project"
-            search={(prev) => ({ ...prev, edittodo: undefined })}
-          >
-            <Button variant={"link"} className="hover:text-rose-500">
+          <Link to={path} search={(prev) => ({ ...prev, edittodo: undefined })}>
+            <Button
+              type={"button"}
+              variant={"link"}
+              className="hover:text-rose-500"
+            >
               Close
             </Button>
           </Link>

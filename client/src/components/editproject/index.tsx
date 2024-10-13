@@ -1,6 +1,6 @@
 import { FormEvent, useContext } from "react";
 import Modal from "../modal";
-import { Data, SearchParamsContext } from "@/routes/__root";
+import { Data, Path, SearchParamsContext } from "@/routes/__root";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Link, useNavigate } from "@tanstack/react-router";
@@ -13,7 +13,8 @@ const schema = z
 
 function EditProject() {
   const navigate = useNavigate();
-  const { id, error } = useContext(SearchParamsContext);
+  const path = useContext(Path);
+  const { id, error, edit } = useContext(SearchParamsContext);
   const { projects, userId } = useContext(Data);
   const project = projects.filter((item) => item.id === id)[0];
 
@@ -60,7 +61,12 @@ function EditProject() {
   };
 
   return (
-    <Modal>
+    <Modal
+      show={edit ? true : false}
+      close={() =>
+        navigate({ to: path, search: (prev) => ({ ...prev, edit: undefined }) })
+      }
+    >
       <form
         onSubmit={submit}
         className="p-8 flex flex-col gap-4 items-center rounded-lg bg-white"
@@ -78,7 +84,7 @@ function EditProject() {
           <Button type="submit" className="px-8">
             Save
           </Button>
-          <Link to="/project" search={(prev) => ({ ...prev, edit: undefined })}>
+          <Link to={path} search={(prev) => ({ ...prev, edit: undefined })}>
             <Button variant={"link"} className="hover:text-rose-500">
               Close
             </Button>

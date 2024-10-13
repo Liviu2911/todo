@@ -1,5 +1,5 @@
 import { FormEvent, useContext } from "react";
-import { Data, SearchParamsContext } from "@/routes/__root";
+import { Data, Path, SearchParamsContext } from "@/routes/__root";
 import { Button } from "../ui/button";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -10,6 +10,7 @@ import Select from "../select";
 function EditStatus() {
   const navigate = useNavigate();
   const data = useContext(Data);
+  const path = useContext(Path);
   const { editstatus, id } = useContext(SearchParamsContext);
   const { projects, userId: userid } = useContext(Data);
   const currentStatus = data.projects
@@ -70,7 +71,15 @@ function EditStatus() {
   };
 
   return (
-    <Modal>
+    <Modal
+      show={editstatus ? true : false}
+      close={() =>
+        navigate({
+          to: path,
+          search: (prev) => ({ ...prev, editstatus: undefined }),
+        })
+      }
+    >
       <form
         onSubmit={submit}
         className="p-8 bg-white rounded-lg flex flex-col items-center gap-8"
@@ -78,7 +87,7 @@ function EditStatus() {
         <h1 className="flex items-center gap-2">
           Edit status:{" "}
           <span className="text-rose-500 font-semibold">
-            {currentStatus.name}
+            {currentStatus?.name}
           </span>
           <button
             onClick={deleteStatus}
@@ -108,7 +117,11 @@ function EditStatus() {
             to="/project"
             search={(prev) => ({ ...prev, editstatus: undefined })}
           >
-            <Button variant={"link"} className="hover:text-rose-500">
+            <Button
+              type="button"
+              variant={"link"}
+              className="hover:text-rose-500"
+            >
               Close
             </Button>
           </Link>
